@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{minted}
+\usepackage{comment} 
+
+\title{Metodos Numericos, Practico 1 Ejercicio 2}
+\author{Bruno Lemus}
+\date{August 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Derivando epsilon de maquina}
+
+Dada la representacion de formato simple, tenemos que $1 = (1 + 0) \cdot 2^0$. Luego el proximo numero representable va a ser $x_1 = (1 + \epsilon_M) \cdot 2^0$ donde se cumple que $\epsilon_M$ es el menor $f$ que cumple $2^{23}f \in \mathbf{N}$.
+
+Como el menor natural es $1$ tenemos que $\epsilon_M \cdot 2^{23} = 1 \Rightarrow  \epsilon_M = \frac{1}{2^{23}}$.
+
+\section{Analisis de $g(x)$}
+
+Al evaluar en octave los resultados de la funcion para precision doble y simple obtenemos dos resultados distintos:
+
+\[ g(x) = \frac{x^3}{x - sen(x)} \]
+
+\begin{minted}{octave}
+    x = 5e-4;
+    double_precision = g(x); # 6.0000
+
+    y = single(x);
+    single_precision = g(y); # Inf
+\end{minted}
+
+El resultado $Inf$ es un resultado especial que se utiliza para representar errores de overflow, por lo que pareceria que el resultado de la operacion es un numero que no es representable en precision simple. Sin embargo, sabiendo que el resultado es $6.0000$ sabemos que el resultado deberia ser representable.
+
+Hilando un poco mas profundo, podemos ver los siguiente:
+
+\begin{minted} {octave}
+    top = power(y,3) # 1.2500e-10
+    bottom = y - sin(y) # 0
+\end{minted}
+
+El resultado que llama la atencion aqui es el bottom, que da 0. Recordemos la siguiente propiedad de CDIV:
+
+\[ \lim_{x\to 0} \frac{sin(x)}{x} = 1 \]
+
+Esto nos dice que mientras mas cerca del 0 estamos, mas parecidos son $x$ y $sen(x)$. O en el caso de nuestra funcion estamos evaluando numeros muy cercanos entre si, por lo que en estamos en caso de Cancelacion Catastrofica.
+
+\end{document}
