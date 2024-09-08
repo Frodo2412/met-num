@@ -7,7 +7,7 @@ function retval = jacobi_relajado (A, b, x0, eps, max_iter, w)
   F = - triu(A, 1);
 
   r = (D \ b) * w;
-  Q = w * (D \ (E + F)) + (1 - w) * eye(3);
+  Q = w * (D \ (E + F)) + (1 - w) * eye(size(A));
 
   Xk = x0;
   diff = 10000;
@@ -28,7 +28,8 @@ function retval = jacobi_relajado (A, b, x0, eps, max_iter, w)
   if (i == max_iter)
     error("Metodo de Jacobi no converge luego de %d iteraciones, valor final de x = [%s]", max_iter, mat2str(Xk1));
   endif
-  retval = [i, spectral_radius, Xk1];
+
+  retval = [i, spectral_radius];
 
 endfunction
 
